@@ -1,0 +1,40 @@
+# --- Secrets / environment --------------------------------------------------
+.env
+.env.local
+frontend/.env.local
+*.env.local
+
+# --- Python -----------------------------------------------------------------
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Node / Next.js ---------------------------------------------------------
+node_modules/
+frontend/.next/
+frontend/out/
+npm-debug.log*
+yarn-error.log*
+
+# --- Data / generated artifacts --------------------------------------------
+datasets/raw/*
+!datasets/raw/.gitkeep
+datasets/processed/*
+!datasets/processed/.gitkeep
+
+# --- ChromaDB persistent store (rebuildable) --------------------------------
+ai/storage/chroma_db/
+chroma_db/
+
+# --- OS / editor ------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/settings.json
+*.log

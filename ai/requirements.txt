@@ -1,0 +1,35 @@
+# PDF Processing
+PyMuPDF
+pdfplumber
+
+# OCR
+pytesseract
+Pillow
+
+# Data Processing
+pandas
+numpy
+
+# LLM - Grok API (xAI) ONLY
+openai
+
+# Data Validation
+pydantic
+
+# Embeddings (BGE / E5)
+sentence-transformers
+
+# Vector Database (the ONLY database) - ChromaDB
+chromadb
+
+# Text Processing / Chunking
+langchain-text-splitters
+
+# Configuration
+python-dotenv
+
+# HTTP / TLS
+certifi
+
+# Testing
+pytest

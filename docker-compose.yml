@@ -1,0 +1,46 @@
+# Legal Information Retrieval System - full stack (FastAPI + Next.js)
+# Usage:
+#   1. cp .env.example .env  and set XAI_API_KEY
+#   2. docker compose up --build
+# Backend -> http://localhost:8000  (Swagger at /docs)
+# Frontend -> http://localhost:3000
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: lirs-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      # Inside the container the store lives on a mounted volume.
+      CHROMA_PERSIST_DIRECTORY: ai/storage/chroma_db
+      UPLOAD_DIRECTORY: datasets/raw
+      TESSERACT_CMD: /usr/bin/tesseract
+      CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+    volumes:
+      - chroma_data:/app/ai/storage/chroma_db
+      - uploads_data:/app/datasets/raw
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000/api
+    container_name: lirs-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000/api
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  chroma_data:
+  uploads_data:
