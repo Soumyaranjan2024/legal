@@ -1,0 +1,23 @@
+# Keep the Docker build context small and avoid shipping local-only artifacts.
+.git
+.gitignore
+.dockerignore
+.venv
+venv
+**/__pycache__
+**/*.py[cod]
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+
+# Prebuilt store is rebuilt inside the image from the bundled PDFs.
+ai/storage/chroma_db
+chroma_db
+datasets/processed
+
+# Frontend is deployed separately (Vercel / its own service).
+frontend
+docs
+*.md
+.env
+.env.local

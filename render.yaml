@@ -1,0 +1,68 @@
+# Render Blueprint - Legal Information Retrieval System
+# Deploys the FastAPI backend (Docker) and the Next.js frontend (Node).
+# Reference: https://render.com/docs/blueprint-spec
+#
+# After creating the Blueprint, fill in the secrets marked `sync: false`
+# (GROQ_API_KEY / XAI_API_KEY and the two URLs) in the Render dashboard.
+
+services:
+  # ---------------------------------------------------------------------------
+  # Backend - FastAPI + ChromaDB + BGE embeddings.
+  # The legal PDFs are bundled and the knowledge base is built into the image,
+  # so no persistent disk is needed (and none should be mounted over
+  # /app/ai/storage/chroma_db, or it would hide the baked store).
+  # NOTE: loading the embedding model needs headroom - use the `standard` plan
+  # if the service is OOM-killed on `starter`.
+  # ---------------------------------------------------------------------------
+  - type: web
+    name: legal-ir-backend
+    runtime: docker
+    plan: starter
+    region: singapore
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: XAI_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-120b
+      - key: EMBEDDING_MODEL
+        value: BAAI/bge-small-en-v1.5
+      - key: CHROMA_PERSIST_DIRECTORY
+        value: /app/ai/storage/chroma_db
+      - key: UPLOAD_DIRECTORY
+        value: /app/datasets/raw
+      - key: TESSERACT_CMD
+        value: /usr/bin/tesseract
+      - key: TOP_K
+        value: "10"
+      - key: WEB_SEARCH_ENABLED
+        value: "true"
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      # Comma-separated list of allowed browser origins, e.g.
+      # https://legal-ir-frontend.onrender.com (and your Vercel URL).
+      - key: CORS_ORIGINS
+        sync: false
+
+  # ---------------------------------------------------------------------------
+  # Frontend - Next.js. NEXT_PUBLIC_API_URL is baked in at build time, so set it
+  # to the deployed backend URL plus /api, e.g.
+  # https://legal-ir-backend.onrender.com/api
+  # ---------------------------------------------------------------------------
+  - type: web
+    name: legal-ir-frontend
+    runtime: node
+    plan: starter
+    region: singapore
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npx next start
+    autoDeploy: true
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        sync: false

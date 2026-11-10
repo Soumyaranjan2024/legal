@@ -22,8 +22,11 @@ npm-debug.log*
 yarn-error.log*
 
 # --- Data / generated artifacts --------------------------------------------
+# Source PDFs ARE committed so the knowledge base can be rebuilt at deploy
+# time (Render builds from this repo). Generated artifacts stay ignored.
 datasets/raw/*
 !datasets/raw/.gitkeep
+!datasets/raw/*.pdf
 datasets/processed/*
 !datasets/processed/.gitkeep
 
